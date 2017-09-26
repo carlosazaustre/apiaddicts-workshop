@@ -1,0 +1,41 @@
+{
+  "name": "api-tokens",
+  "version": "1.0.0",
+  "description": "api:addicts Day - Securiza tu REST API con JWT",
+  "main": "server.js",
+  "scripts": {
+    "lint": "standard",
+    "dev": "nodemon server.js",
+    "start": "NODE_ENV=production node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/carlosazaustre/api-tokens.git"
+  },
+  "keywords": [
+    "node.js",
+    "jwt",
+    "json",
+    "web",
+    "tokens",
+    "rest",
+    "api"
+  ],
+  "author": "Carlos Azaustre <cazaustre@gmail.com> (https://carlosazaustre.es)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/carlosazaustre/api-tokens/issues"
+  },
+  "homepage": "https://github.com/carlosazaustre/api-tokens#readme",
+  "dependencies": {
+    "express": "^4.15.4",
+    "express-asyncify": "^1.0.0",
+    "express-jwt": "^5.3.0",
+    "express-jwt-permissions": "^1.0.0",
+    "jsonwebtoken": "^8.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.12.1",
+    "standard": "^10.0.3"
+  }
+}
