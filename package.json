@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "lint": "standard",
-    "dev": "nodemon server.js",
+    "dev": "DEBUG=apiaddicts:* nodemon server.js",
     "start": "NODE_ENV=production node server.js"
   },
   "repository": {
@@ -38,6 +38,7 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
+    "debug": "^3.1.0",
     "nodemon": "^1.12.1",
     "standard": "^10.0.3"
   }
