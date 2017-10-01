@@ -16,8 +16,7 @@ mongoose.Promise = Promise
 app.use('/api', api)
 
 mongoose.connect('mongodb://localhost/apiaddicts', {
-  useMongoClient: true,
-  promiseLibrary: global.Promise
+  useMongoClient: true
 })
 
 server.listen(port, () => {

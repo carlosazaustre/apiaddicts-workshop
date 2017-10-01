@@ -4,9 +4,8 @@ const debug = require('debug')('apiaddicts:api:routes')
 const express = require('express')
 const bodyParser = require('body-parser')
 const asyncify = require('express-asyncify')
-const uuid = require('uuid')
-
 const Movie = require('./models/movie')
+
 const api = asyncify(express.Router())
 
 // parse application/x-www-form-urlencoded

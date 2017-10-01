@@ -1,2 +1,2 @@
 # apiaddicts-workshop
-Workshop in api:addicts Day - How to create REST API with JWT
+api:addicts Day Workshop - How to create REST API with JWT
