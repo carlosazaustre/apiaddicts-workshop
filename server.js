@@ -23,25 +23,11 @@ app.use(helmet())
 app.use('/api', api)
 app.use(errors.handleExpressError)
 
-// You can use module.parent to determine if the current script is loaded by another script.
+// Start server if we're not someone else's dependency
 // https://stackoverflow.com/questions/20769790/use-of-module-parent-in-nodejs
 if (!module.parent) {
-  process.on('uncaughtException', errors.handleFatalError)
-  process.on('unhandledRejection', errors.handleFatalError)
-  process.on('SIGINT', () => {
-    mongoose.connection.close(() => {
-      debug('Mongoose default connection disconnected through app termination'); 
-      process.exit(0);
-    })
-  })
-
   // Connect to database
-  mongoose.connect('mongodb://localhost/apiaddicts', { useMongoClient: true })
-  mongoose.connection.on('error', errors.handleDBError)
-  mongoose.connection.on('disconnected', () => {
-    debug('Mongoose default connection disconnected')
-  })
-  mongoose.connection.on('connected', () => {
+  mongoose.connect('mongodb://localhost/apiaddicts', { useMongoClient: true }, () => {
     debug('Mongoose default connection open')
     // Run Express server
     server.listen(port, () => {
@@ -49,3 +35,16 @@ if (!module.parent) {
     })
   })
 }
+
+process.on('uncaughtException', errors.handleFatalError)
+process.on('unhandledRejection', errors.handleFatalError)
+process.on('SIGINT', () => {
+  mongoose.connection.close(() => {
+    debug('Mongoose default connection disconnected through app termination'); 
+    process.exit(0);
+  })
+})
+mongoose.connection.on('error', errors.handleDBError)
+mongoose.connection.on('disconnected', () => {
+  debug('Mongoose default connection disconnected')
+})
