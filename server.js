@@ -40,8 +40,8 @@ process.on('uncaughtException', errors.handleFatalError)
 process.on('unhandledRejection', errors.handleFatalError)
 process.on('SIGINT', () => {
   mongoose.connection.close(() => {
-    debug('Mongoose default connection disconnected through app termination'); 
-    process.exit(0);
+    debug('Mongoose default connection disconnected through app termination')
+    process.exit(0)
   })
 })
 mongoose.connection.on('error', errors.handleDBError)

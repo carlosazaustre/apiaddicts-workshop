@@ -16,16 +16,24 @@ const api = asyncify(express.Router())
 api.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 api.use(bodyParser.json())
+// Handle JWT authorization
+api.use(isAuthorized)
 
-// API Routes
-// GET /api/movies - Fetch all the movies on DB
-api.get('/movies', jwt(auth), async (req, res, next) => {
+function isAuthorized (req, res, next) {
   const { user } = req
-  debug(`GET /api/movies { username: ${user} }`)
 
   if (!user || !user.username) {
     return next(new Error('Not Authorized'))
   }
+
+  debug(`user: ${user}`)
+  jwt(auth)
+}
+
+// API Routes
+// GET /api/movies - Fetch all the movies on DB
+api.get('/movies', isAuthorized, async (req, res, next) => {
+  debug(`GET /api/movies`)
 
   let movies = []
   try {
@@ -38,14 +46,9 @@ api.get('/movies', jwt(auth), async (req, res, next) => {
 })
 
 // POST /api/movie - Save a new movie on DB
-api.post('/movie', jwt(auth), guard.check(['movies:write']), async (req, res, next) => {
-  const { user } = req
+api.post('/movie', isAuthorized, guard.check(['movies:write']), async (req, res, next) => {
   const movie = req.body
-  debug(`POST /api/movie ${movie} { username: ${user} }`)
-
-  if (!user || !user.username) {
-    return next(new Error('Not Authorized'))
-  }
+  debug(`POST /api/movie ${movie.toJSON()}`)
 
   let savedMovie = {}
   try {
@@ -54,18 +57,13 @@ api.post('/movie', jwt(auth), guard.check(['movies:write']), async (req, res, ne
   } catch (e) {
     return next(e)
   }
-  
+
   res.send(savedMovie)
 })
 
-api.get('/movie/:id', jwt(auth), async (req, res, next) => {
-  const { user } = req
+api.get('/movie/:id', isAuthorized, async (req, res, next) => {
   const { id } = req.params
-  debug(`GET /api/movie/${id} { username: ${user} }`)
-
-  if (!user || !user.username) {
-    return next(new Error('Not Authorized'))
-  }
+  debug(`GET /api/movie/${id}`)
 
   let movie = {}
   try {
@@ -77,22 +75,17 @@ api.get('/movie/:id', jwt(auth), async (req, res, next) => {
   res.send(movie)
 })
 
-api.delete('/movie/:id', jwt(auth), async (req, res, next) => {
-  const { user } = req
+api.delete('/movie/:id', isAuthorized, async (req, res, next) => {
   const { id } = req.params
   debug(`DELETE /api/movie/${id}`)
-
-  if (!user || !user.username) {
-    return next(new Error('Not Authorized'))
-  }
 
   try {
     await Movie.findByIdAndRemove(id)
   } catch (e) {
     return next(e)
   }
-  
-  res.send({ message: `Movie with ID: ${id} has been deleted`})
+
+  res.send({ message: `Movie with ID: ${id} has been deleted` })
 })
 
 module.exports = api
