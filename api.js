@@ -3,6 +3,7 @@
 const debug = require('debug')('apiaddicts:api:routes')
 const express = require('express')
 const jwt = require('express-jwt')
+const guard = require('express-jwt-permissions')()
 const bodyParser = require('body-parser')
 const asyncify = require('express-asyncify')
 
@@ -23,7 +24,7 @@ api.get('/movies', jwt(auth), async (req, res, next) => {
   res.send(movies)
 })
 
-api.post('/movie', jwt(auth), async (req, res, next) => {
+api.post('/movie', jwt(auth), guard.check(['movies:write']), async (req, res, next) => {
   const movie = req.body
   debug(`POST /api/movie ${movie}`)
   await Movie.create(movie)
