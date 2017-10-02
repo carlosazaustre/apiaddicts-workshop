@@ -14,6 +14,10 @@ async function fetchAll (req, res, next) {
     return next(e)
   }
 
+  if (movies.length < 1) {
+    return res.send({ message: 'DB has not records yet' })
+  }
+
   res.send(movies)
 }
 
@@ -29,13 +33,17 @@ async function fetchById (req, res, next) {
     return next(e)
   }
 
+  if (!movie) {
+    return next(new Error(`Movie with id ${id} was not found`))
+  }
+
   res.send(movie)
 }
 
 // POST /api/movie - Add a new movie to DB
 async function save (req, res, next) {
   const movie = req.body
-  debug(`POST /api/movie ${movie.toJSON()}`)
+  debug(`POST /api/movie ${JSON.stringify(movie)}`)
 
   let savedMovie = {}
   try {

@@ -7,6 +7,7 @@ const asyncify = require('express-asyncify')
 
 const isAuthorized = require('../middlewares/is-authorized')
 const movies = require('./movies')
+const auth = require('./auth')
 
 const api = asyncify(express.Router())
 
@@ -14,10 +15,11 @@ const api = asyncify(express.Router())
 api.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 api.use(bodyParser.json())
-// Handle JWT authorization
-api.use(isAuthorized)
 
 // API Routes
+api.post('/auth', auth.generateToken)
+api.get('/auth/:token', auth.decodeToken)
+
 api.get('/movies', isAuthorized, movies.fetchAll)
 api.get('/movie/:id', isAuthorized, movies.fetchById)
 api.post('/movie', isAuthorized, guard.check(['movies:write']), movies.save)
