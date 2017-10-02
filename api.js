@@ -2,14 +2,13 @@
 
 const debug = require('debug')('apiaddicts:api:routes')
 const express = require('express')
-const jwt = require('express-jwt')
 const guard = require('express-jwt-permissions')()
 const bodyParser = require('body-parser')
 const asyncify = require('express-asyncify')
 
 const Movie = require('./models/movie')
+const isAuthorized = require('./middlewares/is-authorized')
 
-const auth = { secret: process.env.SECRET || 'apiaddicts' }
 const api = asyncify(express.Router())
 
 // parse application/x-www-form-urlencoded
@@ -18,17 +17,6 @@ api.use(bodyParser.urlencoded({ extended: false }))
 api.use(bodyParser.json())
 // Handle JWT authorization
 api.use(isAuthorized)
-
-function isAuthorized (req, res, next) {
-  const { user } = req
-
-  if (!user || !user.username) {
-    return next(new Error('Not Authorized'))
-  }
-
-  debug(`user: ${user}`)
-  jwt(auth)
-}
 
 // API Routes
 // GET /api/movies - Fetch all the movies on DB
