@@ -15,7 +15,7 @@ async function generateToken (req, res, next) {
   const payload = {
     username
   }
-  
+
   debug(`payload: ${JSON.stringify(payload)}`)
   let token = ''
   try {

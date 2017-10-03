@@ -3,7 +3,7 @@
 const debug = require('debug')('apiaddicts:api:errors')
 const chalk = require('chalk')
 
-// Express error handler
+// Express response error handler
 function handleExpressError (err, req, res, next) {
   debug(`${chalk.red('[error]')}: ${err.message}`)
 
@@ -11,7 +11,7 @@ function handleExpressError (err, req, res, next) {
     return res.status(404).send({ error: err.message })
   }
 
-  if (err.message.match(/authorized/)) {
+  if (err.message.match(/not authorized/)) {
     return res.status(403).send({ error: err.message })
   }
 
