@@ -27,7 +27,7 @@ app.use(errors.handleExpressError)
 // https://stackoverflow.com/questions/20769790/use-of-module-parent-in-nodejs
 if (!module.parent) {
   // Connect to database
-  mongoose.connect('mongodb://localhost/apiaddicts', { useMongoClient: true }, () => {
+  mongoose.connect(process.env.MONGO_URL, { useMongoClient: true }, () => {
     debug('Mongoose default connection open')
     // Run Express server
     server.listen(port, () => {

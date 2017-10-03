@@ -1,0 +1,22 @@
+version: '3'
+services:
+  db:
+    image: mongo:3.2
+    volumes:
+      - db-data:/data/db
+    ports:
+      - "27017:27017"
+    
+  api:
+    build: .
+    links:
+      - db
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URL=mongodb://db/apiaddicts
+
+volumes:
+  db-data:
