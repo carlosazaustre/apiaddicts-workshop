@@ -2,22 +2,11 @@
 
 const debug = require('debug')('apiaddicts:api:routes:movies')
 const Movie = require('../models/movie')
-
-function launchErrorIfNotAuthorized (req, next) {
-  if (!req.user || !req.user.username) {
-    return next(new Error('Not Authorized'))
-  }
-}
-
-function launchErrorIfNotAdmin (req, next) {
-  if (!req.user.admin) {
-    return next(new Error('The user has not admin privileges'))
-  }
-}
+const errors = require('../handlers/errors')
 
 // GET /api/movies - Fetch all the movies on DB
 async function fetchAll (req, res, next) {
-  launchErrorIfNotAuthorized(req, next)
+  errors.throwErrorIfNotAuthorized(req, next)
   debug(`GET /api/movies`)
 
   let movies = []
@@ -36,7 +25,7 @@ async function fetchAll (req, res, next) {
 
 // GET /api/movie/:id - Fetch a movie by Id
 async function fetchById (req, res, next) {
-  launchErrorIfNotAuthorized(req, next)
+  errors.throwErrorIfNotAuthorized(req, next)
 
   const { id } = req.params
   debug(`GET /api/movie/${id}`)
@@ -57,7 +46,7 @@ async function fetchById (req, res, next) {
 
 // POST /api/movie - Add a new movie to DB
 async function save (req, res, next) {
-  launchErrorIfNotAuthorized(req, next)
+  errors.throwErrorIfNotAuthorized(req, next)
 
   const movie = req.body
   debug(`POST /api/movie ${JSON.stringify(movie)}`)
@@ -74,8 +63,8 @@ async function save (req, res, next) {
 
 // DELETE /api/movie/:id - Removes a Movie by Id from the DB
 async function remove (req, res, next) {
-  launchErrorIfNotAuthorized(req, next)
-  launchErrorIfNotAdmin(req, next)
+  errors.throwErrorIfNotAuthorized(req, next)
+  errors.throwErrorIfNotAdmin(req, next)
 
   const { id } = req.params
   debug(`DELETE /api/movie/${id}`)

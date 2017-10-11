@@ -7,7 +7,7 @@ const asyncify = require('express-asyncify')
 const mongoose = require('mongoose')
 const helmet = require('helmet')
 
-const errors = require('./utils/errors')
+const errors = require('./handlers/errors')
 const api = require('./api')
 
 const port = process.env.PORT || 3000

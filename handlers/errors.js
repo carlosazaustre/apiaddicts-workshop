@@ -3,6 +3,20 @@
 const debug = require('debug')('apiaddicts:api:errors')
 const chalk = require('chalk')
 
+// Throw error if user request is not token authorized
+function throwErrorIfNotAuthorized (req, next) {
+  if (!req.user || !req.user.username) {
+    return next(new Error('Not Authorized'))
+  }
+}
+
+// Throw error if user is not admin
+function throwErrorIfNotAdmin (req, next) {
+  if (!req.user.admin) {
+    return next(new Error('The user has not admin privileges'))
+  }
+}
+
 // Express response error handler
 function handleExpressError (err, req, res, next) {
   debug(`${chalk.red('[error]')}: ${err.message}`)
@@ -41,5 +55,7 @@ module.exports = {
   handleError,
   handleExpressError,
   handleFatalError,
-  handleDBError
+  handleDBError,
+  throwErrorIfNotAuthorized,
+  throwErrorIfNotAdmin
 }
