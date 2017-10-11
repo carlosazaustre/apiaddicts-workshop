@@ -34,7 +34,7 @@ function handleExpressError (err, req, res, next) {
 
 // Handle regular errors
 function handleError (err) {
-  debug(`${chalk.red('[error]')}: ${err.message}`)
+  debug(`${chalk.red('[error]')} Failed to connect to DB on startup: ${err.message}`)
   console.error(err.stack)
 }
 
