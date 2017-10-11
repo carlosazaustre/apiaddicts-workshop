@@ -64,8 +64,7 @@ async function save (req, res, next) {
 
   let savedMovie = {}
   try {
-    await Movie.create(movie)
-    savedMovie = await Movie.find({ title: movie.title })
+    savedMovie = await Movie.create(movie)
   } catch (e) {
     return next(e)
   }

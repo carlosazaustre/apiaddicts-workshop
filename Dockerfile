@@ -7,4 +7,4 @@ RUN mkdir -p /usr/local/src/apiaddicts-api && cp -a /tmp/node_modules /usr/local
 WORKDIR /usr/local/src/apiaddicts-api
 ADD . /usr/local/src/apiaddicts-api
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]
