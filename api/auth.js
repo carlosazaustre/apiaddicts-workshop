@@ -11,10 +11,7 @@ promisify(jwt.verify)
 
 // POST /api/auth - generate a new token based in info requested
 async function generateToken (req, res, next) {
-  const { username } = req.body
-  const payload = {
-    username
-  }
+  const payload = req.body
 
   debug(`payload: ${JSON.stringify(payload)}`)
   let token = ''
