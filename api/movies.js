@@ -9,18 +9,17 @@ async function fetchAll (req, res, next) {
   errors.throwErrorIfNotAuthorized(req, next)
   debug(`GET /api/movies`)
 
-  let movies = []
   try {
-    movies = await Movie.find({})
+    let movies = await Movie.find({})
+
+    if (movies.length < 1) {
+      return res.send({ message: 'DB has not records yet' })
+    }
+
+    res.send(movies)
   } catch (e) {
     return next(e)
   }
-
-  if (movies.length < 1) {
-    return res.send({ message: 'DB has not records yet' })
-  }
-
-  res.send(movies)
 }
 
 // GET /api/movie/:id - Fetch a movie by Id
@@ -30,18 +29,17 @@ async function fetchById (req, res, next) {
   const { id } = req.params
   debug(`GET /api/movie/${id}`)
 
-  let movie = {}
   try {
-    movie = await Movie.findById(id)
+    let movie = await Movie.findById(id)
+
+    if (!movie) {
+      return next(new Error(`Movie with id ${id} was not found`))
+    }
+
+    res.send(movie)
   } catch (e) {
     return next(e)
   }
-
-  if (!movie) {
-    return next(new Error(`Movie with id ${id} was not found`))
-  }
-
-  res.send(movie)
 }
 
 // POST /api/movie - Add a new movie to DB
@@ -51,14 +49,12 @@ async function save (req, res, next) {
   const movie = req.body
   debug(`POST /api/movie ${JSON.stringify(movie)}`)
 
-  let savedMovie = {}
   try {
-    savedMovie = await Movie.create(movie)
+    let savedMovie = await Movie.create(movie)
+    res.send(savedMovie)
   } catch (e) {
     return next(e)
   }
-
-  res.send(savedMovie)
 }
 
 // DELETE /api/movie/:id - Removes a Movie by Id from the DB
@@ -71,11 +67,10 @@ async function remove (req, res, next) {
 
   try {
     await Movie.findByIdAndRemove(id)
+    res.send({ message: `Movie with ID: ${id} has been deleted` })
   } catch (e) {
     return next(e)
   }
-
-  res.send({ message: `Movie with ID: ${id} has been deleted` })
 }
 
 module.exports = {
