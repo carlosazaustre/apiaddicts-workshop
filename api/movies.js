@@ -2,6 +2,7 @@
 
 const debug = require('debug')('apiaddicts:api:routes:movies')
 const Movie = require('../models/movie')
+const { MovieNotFoundError } = require('../handlers/custom-errors')
 
 // GET /api/movies - Fetch all the movies on DB
 async function fetchAll (req, res, next) {
@@ -29,7 +30,7 @@ async function fetchById (req, res, next) {
     let movie = await Movie.findById(id)
 
     if (!movie) {
-      return next(new Error(`Movie with id ${id} was not found`))
+      return next(new MovieNotFoundError(id))
     }
 
     res.send(movie)
