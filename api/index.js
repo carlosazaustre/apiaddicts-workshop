@@ -8,6 +8,7 @@ const asyncify = require('express-asyncify')
 
 const movies = require('./movies')
 const auth = require('./auth')
+const { isAdmin, isAuthorized } = require('../middlewares/authorization')
 
 const config = { secret: process.env.SECRET || 'apiaddicts' }
 const api = asyncify(express.Router())
@@ -21,9 +22,9 @@ api.use(bodyParser.json())
 api.post('/auth', auth.generateToken)
 api.get('/auth/:token', auth.decodeToken)
 
-api.get('/movies', jwt(config), movies.fetchAll)
-api.get('/movie/:id', jwt(config), movies.fetchById)
+api.get('/movies', jwt(config), isAuthorized, movies.fetchAll)
+api.get('/movie/:id', jwt(config), isAuthorized, movies.fetchById)
 api.post('/movie', jwt(config), guard.check(['movies:write']), movies.save)
-api.delete('/movie/:id', jwt(config), movies.remove)
+api.delete('/movie/:id', jwt(config), isAdmin, movies.remove)
 
 module.exports = api
