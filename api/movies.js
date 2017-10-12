@@ -2,7 +2,10 @@
 
 const debug = require('debug')('apiaddicts:api:routes:movies')
 const Movie = require('../models/movie')
-const { MovieNotFoundError } = require('../handlers/custom-errors')
+const {
+  MovieNotFoundError,
+  DatabasHasNotRecordsError
+} = require('../handlers/custom-errors')
 
 // GET /api/movies - Fetch all the movies on DB
 async function fetchAll (req, res, next) {
@@ -12,7 +15,7 @@ async function fetchAll (req, res, next) {
     let movies = await Movie.find({})
 
     if (movies.length < 1) {
-      return res.send({ message: 'DB has not records yet' })
+      return next(new DatabasHasNotRecordsError())
     }
 
     res.send(movies)

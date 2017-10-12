@@ -7,6 +7,30 @@ class MovieNotFoundError extends Error {
   }
 }
 
+class DatabasHasNotRecordsError extends Error {
+  constructor () {
+    super()
+    this.message = 'DB has not records yet'
+  }
+}
+
+class NotAuthorizedError extends Error {
+  constructor () {
+    super()
+    this.message = `The user is not authorized`
+  }
+}
+
+class NotAdminError extends Error {
+  constructor (username) {
+    super()
+    this.message = `The user ${username} has not admin privileges and is not authorized`
+  }
+}
+
 module.exports = {
-  MovieNotFoundError
+  MovieNotFoundError,
+  DatabasHasNotRecordsError,
+  NotAuthorizedError,
+  NotAdminError
 }
