@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "lint": "standard",
-    "dev": "DEBUG=apiaddicts:* nodemon server.js",
+    "dev": "DEBUG=apiaddicts:* nodemon -L server.js",
     "start": "NODE_ENV=production node server.js"
   },
   "repository": {

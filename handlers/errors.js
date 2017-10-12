@@ -2,10 +2,12 @@
 
 const debug = require('debug')('apiaddicts:api:errors')
 const chalk = require('chalk')
+const mongoose = require('mongoose')
 
 // Express response error handler
 function handleExpressError (err, req, res, next) {
   debug(`${chalk.red('[error]')}: ${err.message}`)
+  console.error(err.stack)
 
   if (err.message.match(/not found/)) {
     return res.status(404).send({ error: err.message })
@@ -37,9 +39,24 @@ function handleDBError (err) {
   console.error(err.stack)
 }
 
+// Handle Database disconnect exit
+function handleDisconnectedExit () {
+  debug('Mongoose default connection disconnected')
+}
+
+// Handle Database disconnect by closing application
+function handleGracefulExit () {
+  mongoose.connection.close(() => {
+    debug(`Mongoose default connection with DB ${process.env.MONGO_URL} is disconnected through app termination`)
+    process.exit(0)
+  })
+}
+
 module.exports = {
   handleError,
   handleExpressError,
   handleFatalError,
-  handleDBError
+  handleDBError,
+  handleDisconnectedExit,
+  handleGracefulExit
 }

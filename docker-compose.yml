@@ -9,6 +9,8 @@ services:
     
   api:
     build: .
+    volumes:
+      - .:/usr/local/src/apiaddicts-api
     links:
       - db
     depends_on:

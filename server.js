@@ -9,10 +9,9 @@ const mongoose = require('mongoose')
 const helmet = require('helmet')
 
 const errors = require('./handlers/errors')
+const config = require('./config')
 const api = require('./api')
 
-const port = process.env.PORT || 3000
-const db = process.env.MONGO_URL || 'mongodb://localhost/apiaddicts'
 const app = asyncify(express())
 const server = http.createServer(app)
 
@@ -29,37 +28,27 @@ app.use(errors.handleExpressError)
 if (!module.parent) {
   // Connect to database and then to the Node API Server
   try {
-    mongoose.connect(db, { useMongoClient: true })
-    debug(`Trying to connect to DB ${db}`)
+    mongoose.connect(config.database, { useMongoClient: true })
+    debug(`Trying to connect to DB ${config.database}`)
   } catch (err) {
     debug(`${chalk.red('[error]')} Server initialization failed ${err.message}`)
+    console.error(err.stack)
   }
 }
 
 // Listeners
 process.on('uncaughtException', errors.handleFatalError)
 process.on('unhandledRejection', errors.handleFatalError)
-process.on('SIGINT', gracefulExit)
+process.on('SIGINT', errors.handleGracefulExit)
 
 mongoose.connection.on('connected', launchServer)
-mongoose.connection.on('disconnected', disconnectedExit)
+mongoose.connection.on('disconnected', errors.handleDisconnectedExit)
 mongoose.connection.on('error', errors.handleDBError)
 
 // Handlers
 function launchServer () {
-  debug(`Connected to ${db} Database`)
-  server.listen(port, () => {
-    debug(`server running on port ${port}`)
-  })
-}
-
-function disconnectedExit () {
-  debug('Mongoose default connection disconnected')
-}
-
-function gracefulExit () {
-  mongoose.connection.close(() => {
-    debug(`Mongoose default connection with DB ${process.env.MONGO_URL} is disconnected through app termination`)
-    process.exit(0)
+  debug(`Connected to ${config.database} Database`)
+  server.listen(config.port, () => {
+    debug(`server running on port ${config.port}`)
   })
 }
